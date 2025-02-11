@@ -6,7 +6,7 @@ const multer = require('multer');
 const s3Functions = require('./s3'); // Ensure this path is correct
 const app = express();
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 80;
 
 // Set up Multer storage (no disk storage for direct upload to S3)
 const storage = multer.memoryStorage(); // Store files in memory

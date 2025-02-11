@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, '..', 'Frontend')));
 // console.log(path.join(__dirname, '..', 'Frontend'));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
 

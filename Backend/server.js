@@ -5,25 +5,14 @@ const path = require('path');
 const multer = require('multer');
 const s3Functions = require('./s3'); // Ensure this path is correct
 const app = express();
-// const cors = require('cors');
 
-
-
-const PORT = process.env.PORT || 5000;
-
-// Use CORS middleware
-// app.use(cors({
-//   origin: 'http://127.0.0.1:3000',  // Allow your frontend's domain
-//   methods: ['GET', 'POST'], // Specify allowed methods
-//   allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-// }));
-
+const PORT = process.env.PORT || 3001;
 
 // Set up Multer storage (no disk storage for direct upload to S3)
 const storage = multer.memoryStorage(); // Store files in memory
 const upload = multer({ storage: storage });
 
-// Serve static files (index.html, CSS, JS, etc.) from the 'Frontend' directory
+// Serve static files (index.html, CSS, JS, etc.) @ root from the 'Frontend' directory
 app.use(express.static(path.join(__dirname, '..', 'Frontend')));
 
 // Endpoint to upload file to private S3 bucket

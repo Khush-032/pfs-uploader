@@ -24,5 +24,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: pm2 restart Backend
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./Backend  # Ensure you're running `npm ci` in the correct directory
+    - name: Restart PM2
+      run: pm2 restart Backend
+      working-directory: ./Backend  # Ensure `pm2 restart` is run in the correct directory
+

@@ -24,6 +24,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     
+    # Check for lock file in the Backend directory
+    - name: Check for lock file
+      run: |
+        if [ ! -f ./Backend/package-lock.json ]; then
+          echo "Error: Dependencies lock file is not found in ./Backend."
+          exit 1
+        fi
+
     # Install dependencies in the Backend directory
     - name: Install dependencies
       run: npm ci

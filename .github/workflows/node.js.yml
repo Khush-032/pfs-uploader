@@ -17,19 +17,23 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # Set up Node.js in the Backend directory
+    # Set up Node.js
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    
-    # Install dependencies in the Backend directory
+
+    # Manually install dependencies in the Backend folder
     - name: Install dependencies
-      run: npm ci
-      working-directory: ./Backend  # Ensure you're installing dependencies from the Backend folder
+      run: |
+        cd Backend
+        npm ci  # Install dependencies in the Backend directory
+      working-directory: ./Backend  # Ensures npm ci is executed in the Backend folder
 
     # Restart PM2 from the Backend directory
     - name: Restart PM2
-      run: pm2 restart Backend
-      working-directory: ./Backend  # Ensure you're restarting PM2 in the Backend folder
+      run: |
+        cd Backend
+        pm2 restart Backend
+      working-directory: ./Backend  # Ensures PM2 is restarted in the Backend directory

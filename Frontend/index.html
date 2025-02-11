@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload and Download</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="upload">
+        <h1>Upload a .pfs file</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+          <input type="file" name="file" accept=".pfs" required />
+          <button type="submit">Upload</button>
+        </form>
+      </div>
+
+      <div id="download">
+        <h1>Download a .pfs file</h1>
+        <form id="downloadForm">
+          <input
+            type="text"
+            name="filename"
+            placeholder="Enter filename"
+            required
+          />
+          <button type="submit">Download</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="./index.js"></script>
+  </body>
+</html>

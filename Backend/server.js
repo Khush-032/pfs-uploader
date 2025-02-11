@@ -14,6 +14,12 @@ const upload = multer({ storage: storage });
 
 // Serve static files (index.html, CSS, JS, etc.) @ root from the 'Frontend' directory
 app.use(express.static(path.join(__dirname, '..', 'Frontend')));
+// console.log(path.join(__dirname, '..', 'Frontend'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+});
+
 
 // Endpoint to upload file to private S3 bucket
 app.post('/api/upload', upload.single('file'), (req, res) => {
@@ -50,6 +56,7 @@ app.get('/api/download/:filename', (req, res) => {
      fileStream.pipe(res);
   });
 });
+
 
 
 app.listen(PORT, () => {

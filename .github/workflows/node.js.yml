@@ -6,25 +6,27 @@ on:
     
 jobs:
   build:
-
     runs-on: self-hosted
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v4
 
-    # Set up Node.js in the Backend directory
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     
-    # Check for lock file in the Backend directory
+    - name: Debug - List Backend Directory
+      run: ls -la ./Backend
+
+    - name: Debug - Show Lock File
+      run: cat ./Backend/package-lock.json
+
     - name: Check for lock file
       run: |
         if [ ! -f ./Backend/package-lock.json ]; then
@@ -32,12 +34,16 @@ jobs:
           exit 1
         fi
 
-    # Install dependencies in the Backend directory
     - name: Install dependencies
       run: npm ci
-      working-directory: ./Backend  # Ensure you're installing dependencies from the Backend folder
+      working-directory: ./Backend
 
-    # Restart PM2 from the Backend directory
+    - name: Create .env file with secret
+      run: |
+        touch ./Backend/.env
+        echo "${{secrets.PROD}}" > ./Backend/.env
+
     - name: Restart PM2
-      run: pm2 restart Backend
-      working-directory: ./Backend  # Ensure you're restarting PM2 in the Backend folder
+      run: |
+        pm2 restart Backend || pm2 start ./Backend/server.js --name Backend
+      working-directory: ./Backend

@@ -27,8 +27,8 @@ jobs:
 
     - name: Create .env file with secret
       run: |
-        touch ./Backend/.env
-        echo "${{secrets.PROD}}" > ./Backend/.env
+        touch .env
+        echo "${{secrets.PROD}}" > .env
 
     - name: Restart PM2
       run: |

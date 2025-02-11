@@ -1,3 +1,7 @@
+require('dotenv').config();
+
+const PORT = process.env.PORT || 5000;
+
 document.addEventListener("DOMContentLoaded", function () {
   // Handling file upload
   document
@@ -13,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData();
         formData.append("file", file);
 
-        fetch("http://localhost:3000/api/upload", {
+        fetch(`http://localhost:${PORT}/api/upload`, {
           method: "POST",
           body: formData,
         })
@@ -39,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const filename = document.querySelector('input[name="filename"]').value;
       // Validate filename
       if (filename) {
-        fetch(`http://localhost:3000/api/download/${filename}`)
+        fetch(`http://localhost:${PORT}/api/download/${filename}`)
             .then((response) => {
                 if (response.ok) {
                 // Create a link element to trigger the download

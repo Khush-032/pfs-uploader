@@ -7,6 +7,8 @@ const s3Functions = require('./s3'); // Ensure this path is correct
 const app = express();
 
 const PORT = process.env.PORT || 3001;
+const HOST = "0.0.0.0"; // Ensure it binds to all interfaces
+
 
 // Set up Multer storage (no disk storage for direct upload to S3)
 const storage = multer.memoryStorage(); // Store files in memory
@@ -59,6 +61,6 @@ app.get('/api/download/:filename', (req, res) => {
 
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT,HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });

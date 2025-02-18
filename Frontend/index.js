@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData();
         formData.append("file", file);
 
-        fetch(`https://65.0.183.171:3000/api/upload`, {
+        fetch(`http://65.0.183.171:3000/api/upload`, {
           method: "POST",
           body: formData,
         })
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const filename = document.querySelector('input[name="filename"]').value;
       // Validate filename
       if (filename) {
-        fetch(`https://65.0.183.171:3000/api/download/${filename}`)
+        fetch(`http://65.0.183.171:3000/api/download/${filename}`)
             .then((response) => {
                 if (response.ok) {
                 // Create a link element to trigger the download

@@ -54,7 +54,7 @@ app.get('/api/download/:filename', (req, res) => {
 });
 
 // Serve static files (index.html, CSS, JS, etc.) @ root from the 'Frontend' directory
-app.use(express.static(path.join(__dirname, '..', 'Frontend')));
+app.use(express.static(path.join(__dirname, '.', 'Frontend')));
 // console.log(path.join(__dirname, '..', 'Frontend'));
 
 
@@ -63,5 +63,5 @@ app.use(express.static(path.join(__dirname, '..', 'Frontend')));
 // });
 
 app.listen(PORT,HOST, () => {
-  console.log(`Server running at https://${HOST}:${PORT}`);
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });

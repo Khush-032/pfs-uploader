@@ -41,22 +41,25 @@ document.addEventListener("DOMContentLoaded", function () {
       // Validate filename
       if (filename) {
         fetch(`http://65.0.183.171:3000/api/download/${filename}`)
-            .then((response) => {
-                if (response.ok) {
-                // Create a link element to trigger the download
-                const link = document.createElement("a");
-                link.href = response.url;
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                } else {
-                alert("File not found.");
-                }
-            })
-            .catch((error) => {
-                console.error("Error downloading file:", error);
-            });
+          .then((response) => {
+            if (response.ok) {
+              // Convert the response to a Blob and trigger a download
+              const blob = response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const downloadLink = document.createElement("a");
+              downloadLink.href = url;
+              downloadLink.download = filename;
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              document.body.removeChild(downloadLink);
+              window.URL.revokeObjectURL(url);
+            } else {
+              alert("File not found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error downloading file:", error);
+          });
       } else {
         alert("Please enter a valid filename.");
       }

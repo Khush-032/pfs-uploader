@@ -14,14 +14,7 @@ const HOST = "0.0.0.0"; // Ensure it binds to all interfaces
 const storage = multer.memoryStorage(); // Store files in memory
 const upload = multer({ storage: storage });
 
-// Serve static files (index.html, CSS, JS, etc.) @ root from the 'Frontend' directory
-app.use(express.static(path.join(__dirname, '..', 'Frontend')));
-// console.log(path.join(__dirname, '..', 'Frontend'));
 
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
-// });
 
 
 // Endpoint to upload file to private S3 bucket
@@ -60,7 +53,14 @@ app.get('/api/download/:filename', (req, res) => {
   });
 });
 
+// Serve static files (index.html, CSS, JS, etc.) @ root from the 'Frontend' directory
+app.use(express.static(path.join(__dirname, '..', 'Frontend')));
+// console.log(path.join(__dirname, '..', 'Frontend'));
 
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
+// });
 
 app.listen(PORT,HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}`);

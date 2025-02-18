@@ -5,61 +5,60 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Verify that environment variables are loaded
-console.log('AWS_ACCESS_KEY_ID:', process.env.AWS_ACCESS_KEY_ID);
-console.log('AWS_SECRET_ACCESS_KEY:', process.env.AWS_SECRET_ACCESS_KEY ? 'Loaded' : 'Not Loaded');
-console.log('AWS_REGION:', process.env.AWS_REGION);
-console.log('AWS_BUCKET_NAME:', process.env.AWS_BUCKET_NAME);
-
 // Configure AWS SDK v3
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: fromEnv(),
+    region: process.env.AWS_REGION,
+    credentials: fromEnv(),
 });
 
-// Function to format date as dd:mm:yy
-function formatDate() {
-  return format(new Date(), 'dd:MM:yy');
-}
+// Function to format date as dd-MM-yy
+const formatDate = () => format(new Date(), 'dd-MM-yy');
 
-// Function to upload file to S3
-async function uploadFileToS3(file, callback) {
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME, // Specify your private bucket name here
-    Key: `uploads/${formatDate()}_${file.originalname.trim()}`,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'private', // Ensure the file is private
-  };
+/**
+ * Uploads a file to an S3 bucket.
+ * @param {Object} file - The file object containing buffer and metadata.
+ * @returns {Promise<Object>} - Resolves with upload data or throws an error.
+ */
+const uploadFileToS3 = async (file) => {
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `uploads/${formatDate()}_${file.originalname.trim()}`,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: 'private',
+    };
+    
+    try {
+        const command = new PutObjectCommand(params);
+        return await s3Client.send(command);
+    } catch (err) {
+        console.error('Error uploading file to S3:', err);
+        throw err;
+    }
+};
 
-  try {
-    const command = new PutObjectCommand(params);
-    const data = await s3Client.send(command);
-    callback(null, data);
-  } catch (err) {
-    callback(err);
-  }
-}
-
-// Function to download file from S3
-async function downloadFileFromS3(filename, callback) {
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME, // Specify your private bucket name here
-    Key: `uploads/${filename}`, // Ensure the key format matches the upload format
-  };
-
-  try {
-    const command = new GetObjectCommand(params);
-    const data = await s3Client.send(command);
-    // console.log('Downloaded file:', data);
-    const fileStream = data.Body;
-    callback(null, fileStream);
-  } catch (err) {
-    callback(err);
-  }
-}
+/**
+ * Downloads a file from an S3 bucket.
+ * @param {string} filename - The name of the file to download.
+ * @returns {Promise<Stream>} - Resolves with a readable stream or throws an error.
+ */
+const downloadFileFromS3 = async (filename) => {
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `uploads/${filename}`,
+    };
+    
+    try {
+        const command = new GetObjectCommand(params);
+        const data = await s3Client.send(command);
+        return data.Body;
+    } catch (err) {
+        console.error('Error downloading file from S3:', err);
+        throw err;
+    }
+};
 
 module.exports = {
-  uploadFileToS3,
-  downloadFileFromS3,
+    uploadFileToS3,
+    downloadFileFromS3,
 };

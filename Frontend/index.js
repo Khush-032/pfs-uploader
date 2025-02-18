@@ -1,64 +1,74 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-  // Handling file upload
-  document
-    .getElementById("uploadForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
+  const API_BASE_URL = "http://65.0.183.171:3000/api";
 
-      const fileField = document.querySelector('input[type="file"]');
-      const file = fileField.files[0];
-
-      // Validate file extension
-      if (file && file.name.endsWith(".pfs")) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        fetch(`http://65.0.183.171:3000/api/upload`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.text())
-          .then((result) => {
-            alert(result);
-          })
-          .catch((error) => {
-            console.error("Error uploading file:", error);
-          });
-      } else {
-        alert("Please upload a valid .pfs file.");
+  /**
+   * Helper function to make API requests
+   * @param {string} url - API endpoint URL
+   * @param {string} method - HTTP method (GET, POST, etc.)
+   * @param {FormData|null} body - Request body (if applicable)
+   * @returns {Promise<Response>}
+   */
+  async function makeRequest(url, method = "GET", body = null) {
+    try {
+      const response = await fetch(url, { method, body });
+      if (!response.ok) {
+        throw new Error(`HTTP Error ${response.status}: ${await response.text()}`);
       }
-    });
+      return response;
+    } catch (error) {
+      console.error("API Request Error:", error);
+      alert("An error occurred: " + error.message);
+      throw error;
+    }
+  }
 
-  // Handling download form submission
-  document
-    .getElementById("downloadForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
+  // File Upload Handling
+  document.getElementById("uploadForm")?.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-      // Get the filename from the form input
-      const filename = document.querySelector('input[name="filename"]').value;
-      // Validate filename
-      if (filename) {
-        fetch(`http://65.0.183.171:3000/api/download/${filename}`)
-            .then((response) => {
-                if (response.ok) {
-                // Create a link element to trigger the download
-                const link = document.createElement("a");
-                link.href = response.url;
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                } else {
-                alert("File not found.");
-                }
-            })
-            .catch((error) => {
-                console.error("Error downloading file:", error);
-            });
-      } else {
-        alert("Please enter a valid filename.");
-      }
-    });
+    const fileField = document.querySelector('input[type="file"]');
+    if (!fileField || !fileField.files.length) {
+      return alert("Please select a file to upload.");
+    }
+
+    const file = fileField.files[0];
+    if (!file.name.endsWith(".pfs")) {
+      return alert("Please upload a valid .pfs file.");
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await makeRequest(`${API_BASE_URL}/upload`, "POST", formData);
+      alert(await response.text());
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+  });
+
+  // File Download Handling
+  document.getElementById("downloadForm")?.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const filename = document.querySelector('input[name="filename"]').value.trim();
+    if (!filename) {
+      return alert("Please enter a valid filename.");
+    }
+
+    try {
+      const response = await makeRequest(`${API_BASE_URL}/download/${filename}`);
+
+      // Convert response into a downloadable file
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  });
 });

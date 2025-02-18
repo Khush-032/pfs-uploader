@@ -23,12 +23,11 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
-      working-directory: ./Backend
 
     - name: Create .env file with secret
       run: |
         touch .env
-        echo "${{secrets.PROD}}" > ./Backend/.env
+        echo "${{secrets.PROD}}" > ./.env
 
     - name: Restart PM2
       run: |

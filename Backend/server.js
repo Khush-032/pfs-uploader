@@ -7,7 +7,7 @@ const s3Functions = require('./s3'); // Ensure this path is correct
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const HOST = '0.0.0.0'; // Ensure it binds to all interfaces
+const HOST = '65.0.183.171'; // Ensure it binds to all interfaces
 
 // Set up Multer storage for memory-based uploads (direct S3 upload)
 const upload = multer({ storage: multer.memoryStorage() });

@@ -35,4 +35,4 @@ jobs:
     
     - name: Restart with nodemon
       run: |
-        npm start
+        nodemon --watch ./Backend/server.js --exec "node ./Backend/server.js"

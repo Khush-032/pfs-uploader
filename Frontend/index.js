@@ -50,15 +50,21 @@ document.addEventListener("DOMContentLoaded", function () {
   // File Download Handling
   document.getElementById("downloadForm")?.addEventListener("submit", async function (event) {
     event.preventDefault();
-
+  
     const filename = document.querySelector('input[name="filename"]').value.trim();
     if (!filename) {
       return alert("Please enter a valid filename.");
     }
-
+  
     try {
       const response = await makeRequest(`${API_BASE_URL}/download/${filename}`);
-
+      
+      // Check if the response is a valid file
+      const contentType = response.headers.get("Content-Type");
+      if (!contentType || contentType === "text/html") {
+        throw new Error("Invalid file response");
+      }
+  
       // Convert response into a downloadable file
       const blob = await response.blob();
       const link = document.createElement("a");
@@ -69,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.removeChild(link);
     } catch (error) {
       console.error("Download failed:", error);
+      alert("Download failed: " + error.message);
     }
   });
 });

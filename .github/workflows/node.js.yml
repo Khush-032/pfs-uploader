@@ -29,6 +29,10 @@ jobs:
         touch .env
         echo "${{secrets.PROD}}" > ./.env
 
-    - name: Restart PM2
+    # - name: Restart PM2
+    #   run: |
+    #     pm2 restart Backend || pm2 start ./Backend/server.js --name Backend
+    
+    - name: Restart with nodemon
       run: |
-        pm2 restart Backend || pm2 start ./Backend/server.js --name Backend
+        nodemon --watch ./Backend/server.js --exec "node ./Backend/server.js"
